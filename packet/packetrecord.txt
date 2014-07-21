@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Date: Thu, 17 Aug 2006 03:34:38 GMT
+Server: Microsoft-IIS/6.0
+X-Powered-By: ASP.NET
+Content-Length: 295
+Content-Type: text/html
+Set-Cookie: ASPSESSIONIDCARDBDTS=LGMBHIKBLKJGPFGFDHLFMFAN; path=/
+Cache-control: private
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<title>test</title>
+</head>
+
+<body>
+###URL###@@@@@@GET /vote/test.asp&218.57.11.40###URL###$$$$$$

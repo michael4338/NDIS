@@ -1,0 +1,187 @@
+ passthru
+
+ Timestamp is 4322354e (Sat Sep 10 09:22:22 2005)
+
+ Preferred load address is 00010000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00003d9cH .text                   CODE
+ 0002:00000000 00000124H .idata$5                DATA
+ 0002:00000130 0000001cH .rdata                  DATA
+ 0002:0000014c 0000004bH .rdata$debug            DATA
+ 0003:00000000 00000010H .data                   DATA
+ 0003:00000010 00000088H .bss                    DATA
+ 0004:00000000 000002f6H INIT                    CODE
+ 0004:000002f8 00000028H .idata$2                CODE
+ 0004:00000320 00000014H .idata$3                CODE
+ 0004:00000334 00000124H .idata$4                CODE
+ 0004:00000458 000006c0H .idata$6                CODE
+ 0005:00000000 00000058H .rsrc$01                DATA
+ 0005:00000060 00000350H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base     Lib:Object
+
+ 0001:000000b6       _MPInitialize@24           000103b6 f   miniport.obj
+ 0001:0000027f       _MPSendPackets@12          0001057f f   miniport.obj
+ 0001:000004d0       _MPQueryInformation@24     000107d0 f   miniport.obj
+ 0001:000005f0       _MPQueryPNPCapabilities@8  000108f0 f   miniport.obj
+ 0001:00000690       _MPSetInformation@24       00010990 f   miniport.obj
+ 0001:000008e7       _MPProcessSetPowerOid@24   00010be7 f   miniport.obj
+ 0001:00000ae0       _MPReturnPacket@8          00010de0 f   miniport.obj
+ 0001:00000b40       _MPTransferData@24         00010e40 f   miniport.obj
+ 0001:00000c49       _MPHalt@4                  00010f49 f   miniport.obj
+ 0001:00000dd0       _MPReset@8                 000110d0 f   miniport.obj
+ 0001:00000df0       _MPCancelSendPackets@8     000110f0 f   miniport.obj
+ 0001:00000e20       _MPDevicePnPEvent@16       00011120 f   miniport.obj
+ 0001:00000e30       _MPAdapterShutdown@4       00011130 f   miniport.obj
+ 0001:00000e40       _MPFreeAllPacketPools@4    00011140 f   miniport.obj
+ 0001:00000f81       _PtRegisterDevice@0        00011281 f   passthru.obj
+ 0001:00001100       _InitializeListHead@4      00011400 f i passthru.obj
+ 0001:00001151       _PtDispatch@8              00011451 f   passthru.obj
+ 0001:0000138a       _PtDeregisterDevice@0      0001168a f   passthru.obj
+ 0001:000014d5       _PtUnloadProtocol@0        000117d5 f   passthru.obj
+ 0001:00001520       _SecLabCancelIrp@8         00011820 f   passthru.obj
+ 0001:000015d2       _PickPacketFromList@8      000118d2 f   passthru.obj
+ 0001:000017b0       _RemoveEntryList@4         00011ab0 f i passthru.obj
+ 0001:000017e0       _SecLabReceivePacket@12    00011ae0 f   passthru.obj
+ 0001:000018b0       _CompleteIrp@12            00011bb0 f   passthru.obj
+ 0001:000018e0       _EnListPacket@8            00011be0 f   passthru.obj
+ 0001:000019f0       _InsertTailList@8          00011cf0 f i passthru.obj
+ 0001:00001a94       _SecLabAllocateReceivePacket@12 00011d94 f   passthru.obj
+ 0001:00001bff       _SecLabFreeReceivePacket@8 00011eff f   passthru.obj
+ 0001:00001d78       _SecLabSendPacket@12       00012078 f   passthru.obj
+ 0001:000020aa       _SecLabCancelWrite@8       000123aa f   passthru.obj
+ 0001:00002190       _SecLabDoRequest@24        00012490 f   passthru.obj
+ 0001:00002280       _SecLabQueryOidValue@16    00012580 f   passthru.obj
+ 0001:000023dc       _PtBindAdapter@20          000126dc f   protocol.obj
+ 0001:0000278c       _PtOpenAdapterComplete@12  00012a8c f   protocol.obj
+ 0001:000028fb       _PtUnbindAdapter@12        00012bfb f   protocol.obj
+ 0001:00002b2d       _PtUnload@4                00012e2d f   protocol.obj
+ 0001:00002ba7       _PtCloseAdapterComplete@8  00012ea7 f   protocol.obj
+ 0001:00002c1a       _PtResetComplete@8         00012f1a f   protocol.obj
+ 0001:00002d02       _PtRequestComplete@12      00013002 f   protocol.obj
+ 0001:00002ea0       _PtStatus@16               000131a0 f   protocol.obj
+ 0001:00002f40       _PtStatusComplete@4        00013240 f   protocol.obj
+ 0001:00002fcf       _PtSendComplete@12         000132cf f   protocol.obj
+ 0001:000031d0       _PtTransferDataComplete@16 000134d0 f   protocol.obj
+ 0001:000032ce       _PtReceive@28              000135ce f   protocol.obj
+ 0001:0000366e       _PtReceiveComplete@4       0001396e f   protocol.obj
+ 0001:00003776       _PtReceivePacket@8         00013a76 f   protocol.obj
+ 0001:000039ce       _PtPNPHandler@8            00013cce f   protocol.obj
+ 0001:00003aa4       _PtPnPNetEventReconfigure@8 00013da4 f   protocol.obj
+ 0001:00003bdd       _PtPnPNetEventSetPower@8   00013edd f   protocol.obj
+ 0001:00003d72       _DbgPrint                  00014072 f   ntoskrnl:ntoskrnl.exe
+ 0001:00003d78       _DbgBreakPoint@0           00014078 f   ntoskrnl:ntoskrnl.exe
+ 0001:00003d7e       _NdisSend@12               0001407e f   ndis:NDIS.SYS
+ 0001:00003d84       _NdisRequest@12            00014084 f   ndis:NDIS.SYS
+ 0001:00003d8a       _NdisTransferData@28       0001408a f   ndis:NDIS.SYS
+ 0001:00003d90       _NdisGetFirstBufferFromPacketSafe@24 00014090 f   ndis:NDIS.SYS
+ 0001:00003d96       _NdisSendPackets@12        00014096 f   ndis:NDIS.SYS
+ 0002:00000000       __imp__NdisRegisterProtocol@16 00014100     ndis:NDIS.SYS
+ 0002:00000004       __imp__NdisQueryPendingIOCount@8 00014104     ndis:NDIS.SYS
+ 0002:00000008       __imp__NdisPacketPoolUsage@4 00014108     ndis:NDIS.SYS
+ 0002:0000000c       __imp__NdisReEnumerateProtocolBindings@4 0001410c     ndis:NDIS.SYS
+ 0002:00000010       __imp__NdisIMNotifyPnPEvent@8 00014110     ndis:NDIS.SYS
+ 0002:00000014       __imp__NdisCopyFromPacketToPacket@24 00014114     ndis:NDIS.SYS
+ 0002:00000018       __imp__NdisGetReceivedPacket@8 00014118     ndis:NDIS.SYS
+ 0002:0000001c       __imp__NdisDprAllocatePacket@12 0001411c     ndis:NDIS.SYS
+ 0002:00000020       __imp__NdisUnchainBufferAtFront@8 00014120     ndis:NDIS.SYS
+ 0002:00000024       __imp__NdisSetEvent@4      00014124     ndis:NDIS.SYS
+ 0002:00000028       __imp__NdisReleaseSpinLock@4 00014128     ndis:NDIS.SYS
+ 0002:0000002c       __imp__NdisAcquireSpinLock@4 0001412c     ndis:NDIS.SYS
+ 0002:00000030       __imp__NdisMSetAttributesEx@20 00014130     ndis:NDIS.SYS
+ 0002:00000034       __imp__NdisIMGetDeviceContext@4 00014134     ndis:NDIS.SYS
+ 0002:00000038       __imp__NdisFreePacket@4    00014138     ndis:NDIS.SYS
+ 0002:0000003c       __imp__NdisIMCopySendCompletePerPacketInfo@8 0001413c     ndis:NDIS.SYS
+ 0002:00000040       __imp__NdisIMCopySendPerPacketInfo@8 00014140     ndis:NDIS.SYS
+ 0002:00000044       __imp__NdisAllocatePacket@12 00014144     ndis:NDIS.SYS
+ 0002:00000048       __imp__NdisSend@12         00014148     ndis:NDIS.SYS
+ 0002:0000004c       __imp__NdisIMGetCurrentPacketStack@8 0001414c     ndis:NDIS.SYS
+ 0002:00000050       __imp__NdisInitUnicodeString@8 00014150     ndis:NDIS.SYS
+ 0002:00000054       __imp__NdisRequest@12      00014154     ndis:NDIS.SYS
+ 0002:00000058       __imp__NdisReturnPackets@8 00014158     ndis:NDIS.SYS
+ 0002:0000005c       __imp__NdisGetPoolFromPacket@4 0001415c     ndis:NDIS.SYS
+ 0002:00000060       __imp__NdisTransferData@28 00014160     ndis:NDIS.SYS
+ 0002:00000064       __imp__NdisFreeMemory@12   00014164     ndis:NDIS.SYS
+ 0002:00000068       __imp__NdisFreeBufferPool@4 00014168     ndis:NDIS.SYS
+ 0002:0000006c       __imp__NdisWaitEvent@8     0001416c     ndis:NDIS.SYS
+ 0002:00000070       __imp__NdisCloseAdapter@8  00014170     ndis:NDIS.SYS
+ 0002:00000074       __imp__NdisResetEvent@4    00014174     ndis:NDIS.SYS
+ 0002:00000078       __imp__NdisCancelSendPackets@8 00014178     ndis:NDIS.SYS
+ 0002:0000007c       __imp__NdisFreePacketPool@4 0001417c     ndis:NDIS.SYS
+ 0002:00000080       __imp__NdisTerminateWrapper@8 00014180     ndis:NDIS.SYS
+ 0002:00000084       __imp__NdisIMAssociateMiniport@8 00014184     ndis:NDIS.SYS
+ 0002:00000088       __imp__NdisIMDeregisterLayeredMiniport@4 00014188     ndis:NDIS.SYS
+ 0002:0000008c       __imp__NdisMRegisterUnloadHandler@8 0001418c     ndis:NDIS.SYS
+ 0002:00000090       __imp__NdisIMRegisterLayeredMiniport@16 00014190     ndis:NDIS.SYS
+ 0002:00000094       __imp__NdisInitializeWrapper@16 00014194     ndis:NDIS.SYS
+ 0002:00000098       __imp__NdisAllocateBufferPool@12 00014198     ndis:NDIS.SYS
+ 0002:0000009c       __imp__NdisGeneratePartialCancelId@0 0001419c     ndis:NDIS.SYS
+ 0002:000000a0       __imp__NdisAllocateSpinLock@4 000141a0     ndis:NDIS.SYS
+ 0002:000000a4       __imp__NdisMRegisterDevice@24 000141a4     ndis:NDIS.SYS
+ 0002:000000a8       __imp__NdisMSleep@4        000141a8     ndis:NDIS.SYS
+ 0002:000000ac       __imp__NdisMDeregisterDevice@4 000141ac     ndis:NDIS.SYS
+ 0002:000000b0       __imp__NdisDeregisterProtocol@8 000141b0     ndis:NDIS.SYS
+ 0002:000000b4       __imp__NdisQueryBufferSafe@16 000141b4     ndis:NDIS.SYS
+ 0002:000000b8       __imp__NdisFreeBuffer@4    000141b8     ndis:NDIS.SYS
+ 0002:000000bc       __imp__NdisAllocateBuffer@20 000141bc     ndis:NDIS.SYS
+ 0002:000000c0       __imp__NdisAllocateMemoryWithTag@12 000141c0     ndis:NDIS.SYS
+ 0002:000000c4       __imp__NdisGetFirstBufferFromPacketSafe@24 000141c4     ndis:NDIS.SYS
+ 0002:000000c8       __imp__NdisSendPackets@12  000141c8     ndis:NDIS.SYS
+ 0002:000000cc       __imp__NdisInterlockedIncrement@4 000141cc     ndis:NDIS.SYS
+ 0002:000000d0       __imp__NdisInterlockedDecrement@4 000141d0     ndis:NDIS.SYS
+ 0002:000000d4       __imp__NdisInitializeEvent@4 000141d4     ndis:NDIS.SYS
+ 0002:000000d8       __imp__NdisCloseConfiguration@4 000141d8     ndis:NDIS.SYS
+ 0002:000000dc       __imp__NdisIMInitializeDeviceInstanceEx@12 000141dc     ndis:NDIS.SYS
+ 0002:000000e0       __imp__NdisOpenAdapter@44  000141e0     ndis:NDIS.SYS
+ 0002:000000e4       __imp__NdisAllocatePacketPoolEx@20 000141e4     ndis:NDIS.SYS
+ 0002:000000e8       __imp__NdisReadConfiguration@20 000141e8     ndis:NDIS.SYS
+ 0002:000000ec       __imp__NdisOpenProtocolConfiguration@12 000141ec     ndis:NDIS.SYS
+ 0002:000000f0       __imp__NdisIMDeInitializeDeviceInstance@4 000141f0     ndis:NDIS.SYS
+ 0002:000000f4       __imp__NdisIMCancelInitializeDeviceInstance@8 000141f4     ndis:NDIS.SYS
+ 0002:000000f8       __imp__NdisDprFreePacket@4 000141f8     ndis:NDIS.SYS
+ 0002:000000fc       \177NDIS_NULL_THUNK_DATA   000141fc     ndis:NDIS.SYS
+ 0002:00000100       __imp__ExAllocatePoolWithTag@12 00014200     ntoskrnl:ntoskrnl.exe
+ 0002:00000104       __imp__DbgBreakPoint@0     00014204     ntoskrnl:ntoskrnl.exe
+ 0002:00000108       __imp_@InterlockedExchange@8 00014208     ntoskrnl:ntoskrnl.exe
+ 0002:0000010c       __imp__ExFreePool@4        0001420c     ntoskrnl:ntoskrnl.exe
+ 0002:00000110       __imp__IoReleaseCancelSpinLock@4 00014210     ntoskrnl:ntoskrnl.exe
+ 0002:00000114       __imp_@IofCompleteRequest@8 00014214     ntoskrnl:ntoskrnl.exe
+ 0002:00000118       __imp__DbgPrint            00014218     ntoskrnl:ntoskrnl.exe
+ 0002:0000011c       __imp__RtlAssert@16        0001421c     ntoskrnl:ntoskrnl.exe
+ 0002:00000120       \177ntoskrnl_NULL_THUNK_DATA 00014220     ntoskrnl:ntoskrnl.exe
+ 0003:00000000       _MediumArray               00014300     passthru.obj
+ 0003:00000010       _ProtHandle                00014310     passthru.obj
+ 0003:00000014       _DriverHandle              00014314     passthru.obj
+ 0003:00000018       _pAdaptList                00014318     passthru.obj
+ 0003:0000001c       _MiniportCount             0001431c     passthru.obj
+ 0003:00000020       _NdisDeviceHandle          00014320     passthru.obj
+ 0003:00000024       _ControlDeviceObject       00014324     passthru.obj
+ 0003:00000028       _ControlDeviceState        00014328     passthru.obj
+ 0003:0000002c       _NdisWrapperHandle         0001432c     <common>
+ 0003:00000030       _GlobalLock                00014330     <common>
+ 0003:00000038       _pAdaptTotal               00014338     <common>
+ 0003:00000040       _PacketListLock            00014340     <common>
+ 0003:00000048       _WriteIrpLock              00014348     <common>
+ 0003:00000050       _PacketCount               00014350     <common>
+ 0003:00000054       _ReadCount                 00014354     <common>
+ 0003:00000058       _PartialCancelId           00014358     <common>
+ 0003:00000060       _PacketList                00014360     <common>
+ 0003:00000068       _RecvBufferPool            00014368     <common>
+ 0003:0000006c       _CurrentNum                0001436c     <common>
+ 0003:00000070       _PendedWritesList          00014370     <common>
+ 0003:00000078       _ReadIrp                   00014378     <common>
+ 0003:0000007c       _LocalCancelId             0001437c     <common>
+ 0003:00000080       _SendBufferPool            00014380     <common>
+ 0003:00000088       _ReadIrpLock               00014388     <common>
+ 0003:00000090       ___@@_PchSym_@00@UmwrhUkzgsifrmexUwireviUlyqxspUrDIGUkivxlnkOlyq@passthru 00014390     <common>
+ 0003:00000094       _PendedSendCount           00014394     <common>
+ 0004:00000012       _DriverEntry@8             00014412 f   passthru.obj
+ 0004:000002f8       __IMPORT_DESCRIPTOR_ntoskrnl 000146f8     ntoskrnl:ntoskrnl.exe
+ 0004:0000030c       __IMPORT_DESCRIPTOR_NDIS   0001470c     ndis:NDIS.SYS
+ 0004:00000320       __NULL_IMPORT_DESCRIPTOR   00014720     ntoskrnl:ntoskrnl.exe
+
+ entry point at        0004:00000012
+
+ Static symbols
+

@@ -1,0 +1,33 @@
+DDK自带Pathru 版本
+在VC环境下编译通过，没做任何修改
+
+
+改动：
+8/3/2005
+
+2.protocol.c 中的 DriverEntry函数中加入初始化代码
+3.Passthru.h 中的 全局变量和自定义函数
+4.passthru.c 中的 PtDispatch中加入(读写)IoCtrl例程
+5.passthru.c 中自定义函数的实现
+6.protocol.c 中的 PtBindAdapter函数中加入NdisAllocateBufferPool的代码
+7.miniport.c 中的 MPHalt函数中加入NdisFreeBufferPool的代码
+8.protocol.c 中的 PtBindAdapter函数中加入赋值到pAdaptTotal的代码。权宜之计
+9.protocol.c 中的 Receive TransferDataComplete ReceivePacket例程
+10.protocol.c中的 PtSendComplete函数
+
+
+
+功能：
+实现了接收包——〉加入队列——〉取消包——〉上传到应用程序  的全部功能。
+但是包的内容在时刻变化，不知是什么原因。
+
+
+包的内容不变化，完成了接收的全部功能。
+
+没考虑卸载的问题，卸载需要那些函数，在函数中要进行资源释放，并且要和接收包以及发送包的操作
+同步。
+
+
+完成了发送功能，而且经检测出现重启的可能不大。可以完成大数目的数据包发送
+
+现在驱动部分已经基本解决，包括得到本机的MAC地址也通过发送requestoid 解决了。

@@ -1,0 +1,699 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+
+
+<title>基于PassThru的NDIS中间层驱动程序扩展 </title>
+<meta http-equiv="Content-Type" content="text/html; charset=GB2312">
+<meta name="Keywords" content="安全焦点, xfocus, 陷阱网络, honeynet, honeypot, 调查取证, forensic, 入侵检测, intrusion detection, 无线安全, wireless security, 安全论坛, security forums, 安全工具, security tools, 攻击程序, exploits, 安全公告, security advisories, 安全漏洞, security vulnerabilities, 安全教程, security tutorials, 安全培训, security training, 安全帮助, security help, 安全标准, security standards, 安全代码, security code, 安全资源, security resources, 安全编程, security programming, 加密, cryptography,NDIS IM  中间层驱动">
+<link rel="stylesheet" href="865_files/plone.css" type="text/css">
+</head><body bgcolor="#ffffff" text="#000000">
+<div class="top">
+  <div class="searchBox">
+    <form name="searchform" action="http://www.google.com/search" method="get">
+      <input name="domains" value="www.xfocus.net" type="hidden">
+      <input name="sitesearch" value="www.xfocus.net" type="hidden">
+      <input name="q" size="20" type="text">
+      <input name="btnG" value="Google Search" type="submit">
+    </form>
+  </div>
+  <img src="865_files/logo.gif" alt="xfocus logo" width="180" border="0" height="80">
+  <img src="865_files/title.gif" alt="xfocus title" width="230" border="0" height="20">
+</div>
+<div class="tabs">
+  <a href="http://www.xfocus.net/index.html" class="plain">首页</a>
+  <a href="http://www.xfocus.net/releases/index.html" class="plain">焦点原创</a>
+  <a href="http://www.xfocus.net/articles/index.html" class="selected">安全文摘</a>
+  <a href="http://www.xfocus.net/tools/index.html" class="plain">安全工具</a>
+  <a href="http://www.xfocus.net/vuls/index.html" class="plain">安全漏洞</a>
+  <a href="http://www.xfocus.net/projects/index.html" class="plain">焦点项目</a>
+  <a href="https://www.xfocus.net/bbs/index.php?lang=cn" class="plain">焦点论坛</a>
+  <a href="http://www.xfocus.net/about/index.html" class="plain">关于我们</a>
+</div>
+<div class="personalBar">
+  <a href="https://www.xfocus.net/php/add_article.php">添加文章</a> <a href="http://xcon.xfocus.net/">Xcon</a> <a href="http://www.xfocus.org/">English Version</a>
+</div>
+<table class="columns">
+  <tbody><tr>
+    <td class="left">
+<div class="box">
+  <h5>&nbsp;文章分类&nbsp;</h5>
+  <div class="body">
+    <div class="content odd">
+       <div style="white-space: nowrap;">
+	    <img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/4.html"><b>专题文章 &lt;&lt;</b></a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/2.html">漏洞分析</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/3.html">安全配置</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/1.html">黑客教学</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/5.html">编程技术</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/7.html">工具介绍</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/6.html">火墙技术</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/8.html">入侵检测</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/9.html">破解专题</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/11.html">焦点公告</a><br><img src="865_files/folder_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/12.html">焦点峰会</a><br>
+       </div>
+	    
+    </div>
+  </div>
+</div>
+
+<div class="box">
+  <h5>&nbsp;文章推荐&nbsp;</h5>
+  <div class="body">
+    <div class="content odd">
+	    <img src="865_files/document_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/200408/733.html">补丁管理最佳安全实践之资产评估</a><br><img src="865_files/document_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/200404/689.html">国内网络安全风险评估市场与技术操作</a><br><img src="865_files/document_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/200410/743.html">协作的信息系统风险评估</a><br><img src="865_files/document_icon.gif" border="0"> <a href="http://www.xfocus.net/articles/200510/826.html">用Perl POE实现端口重定向</a><br>
+    </div>
+  </div>
+</div>
+	</td>
+    <td class="main">
+	  <h1>基于PassThru的NDIS中间层驱动程序扩展</h1><br>创建时间：2006-05-02 更新时间：2006-05-05<br>文章属性：原创<br>文章提交：<a href="https://www.xfocus.net/bbs/index.php?lang=cn&amp;act=Profile&amp;do=03&amp;MID=64388">Addylee</a> (Addylee2004_at_163.com)<br><br>基于PassThru的NDIS中间层驱动程序扩展<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+独孤求真 <br>
+概要：开发一个NDIS驱动是一项相对复杂的工作，这一方面是由于核心驱动本身有更多的限制和要求，有更多的“游戏规则”要求开发者理解和掌握，NDIS
+的复杂性把难度更是提高了，本文以PassThru为例，加上自己的理解，讲述了NDIS驱动的处理过程和在PassThru的基础上进行扩展的基本方
+法，本文并不是一个入门读物，所以没有提及任何核心驱动开发的相关知识，本文主要讲述的是NDIS中间层对数据包处理的流程。在阅读过程中，关于相关
+API的用法，或其它信息，请参看DDK文档。<br>
+<br>
+一&nbsp;&nbsp;NDIS驱动程序分类.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NDIS(Network Driver Interface Specification)是Windows网络驱动程序接口标准，NDIS驱动程序分为三类：<br>
+1. NDIS Miniport NIC Driver: 底层的微端口NIC驱动，这就是网络设备的物理的驱动程序了。<br>
+2. NDIS Protocol Driver: 高层的协议驱动，用来实现某个具体的协议栈，如TCP/IP协议栈，<br>
+&nbsp;&nbsp; 并向上导出TDI接口。<br>
+3. NDIS Intermediate Driver: 中间层驱动，位于Miniport Driver和Protocol Driver之间。<br>
+<br>
+二&nbsp;&nbsp;NDIS驱动结构简介.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TDI(Transport
+Driver Interface)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_______________________________________________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+________|__________&nbsp;&nbsp;&nbsp;&nbsp;_______|_______&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_____&nbsp;&nbsp;|&nbsp;&nbsp;LAN
+Protocols&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;|
+|___________________|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;|_____________________&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;Native&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Media&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LAN Media Type&nbsp;&nbsp;
+|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Aware&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+D&nbsp;&nbsp;
+_____________________|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Protocol&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+I&nbsp;&nbsp;|&nbsp;&nbsp; __________________&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+S&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|NDIS Intermediate
+|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+I&nbsp;&nbsp;|&nbsp;&nbsp;|__________________|&nbsp;&nbsp;|_______________|
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | N&nbsp;&nbsp;|_________________________________________ <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|
+T&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+E&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Native Media
+Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | R&nbsp;&nbsp;__________________________________________|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+F&nbsp;&nbsp;|&nbsp;&nbsp;_________________&nbsp;&nbsp;&nbsp;&nbsp;__________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+A&nbsp;&nbsp;|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+C&nbsp;&nbsp;| | NDIS Miniport&nbsp;&nbsp;
+|&nbsp;&nbsp;|&nbsp;&nbsp;NDIS Miniport&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+E&nbsp;&nbsp;| |_________________|&nbsp;&nbsp;|__________________|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;|_________________________________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NDIS
+Interface&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |______________________________________________|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;________________&nbsp;&nbsp;&nbsp;&nbsp;______________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;NetCard&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;|&nbsp;&nbsp; NetCard&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|________________|&nbsp;&nbsp;|______________|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+图一<br>
+&nbsp;&nbsp;&nbsp;&nbsp;其中，最上层是一个NDIS Protocol Driver，它向上提供一个Transport
+Driver
+Interface(TDI)，向下通过NDIS接口与下面的NDIS中间层的上边界交互，NDIS中间层的下边界通过NDIS接口与下层的NDIS
+Miniport Driver交互。最后，由NDIS Miniport
+Driver利用NDIS接口与物理网络设备NetCard交互。NetCard是由不同的网卡设备产商提供的，而NDIS接口库是由Microsoft
+开发好的，为什么NDIS Miniport
+Driver不是直接与物理网卡交互，而是通过NDIS接口与下物理网卡交互呢？(我想很多人都会和我当初一样，有这个疑问)。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;事实上，这是由于Windows系统为了提高可移植性，而设计出一个硬件抽象层(HAL)，硬件抽象层
+在内部处理不同的硬件之间的差异，并且暴露出一个统一的接口给核心驱动开发者。例如：在Intel构架的系统中，内存和外部设备的端口采用分别编址，如果
+要从某个外部设备的端口上读写数据的话，可能要通过专用指令IN/OUT读写，而在Alpha构架的系统上，采用的是统一编址的方式，所以对外部设备的
+IO端口进行读写的话还是通过访问内存的指令，HAL提供一组服务支持函数，如果要访问外部设备上的端口数据可以使用
+READ_PORT_UCHAR/WRITE_PORT_UCHAR等等，核心驱动开发者不用去考虑不同硬件构架的之间的差异。在NDIS
+Miniport
+Driver中，NetCard驱动的程序，正是这样通过NDIS接口提供的一组类似功能的函数，与物理的网络设备进行交互。其中，最上层是一个NDIS
+Protocol Driver，它向上提供一个Transport Driver
+Interface(TDI)，向下通过NDIS接口与下面的NDIS中间层的上边界交互，NDIS中间层的下边界通过NDIS接口与下层的NDIS
+Miniport Driver交互。最后，由NDIS Miniport Driver利用NDIS接口与物理网络设备NetCard交互。<br>
+<br>
+三 NDIS驱动程序的数据处理流程<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ________________________&nbsp;&nbsp;&nbsp;&nbsp;_____<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;Transport
+Driver&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|________________________|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Protocol Xxx - Media X |&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------------------------+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ___________________________|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|___________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ________________________&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; | <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Miniport Xxx - Media X |&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------------------------|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;Intermediate
+Driver&nbsp;&nbsp; |&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|________________________|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Protocol Xxx - Media Y |&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------------------------+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ___________________________|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|___________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+| <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ________________________&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; | <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| Miniport Xxx - Media Y |&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+------------------------|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NIC
+Driver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|________________________|&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+| <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ___________________________|&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|_________________________________|&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _________________<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+|<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+NIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|_________________| <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+图二&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<br>
+3.1
+三种NDIS驱动程序的关
+系。&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;通常一个NDIS Protocol Driver
+的上边沿导出TDI接口，并在其下边沿向NDIS注册一组Protocolxxx操作例程；一个NDIS Miniport
+Driver则在其下边沿通过NDIS接口操作物理网络设备，并在其上边沿向NDIS注册一组Miniportxxx操作例程。当一个中间层介入的时候，
+必需遵守这个规则，因此，中间层驱动对上层来说，扮演一个Miniport
+Driver的角色，它在上边沿向NDIS注册一组Miniportxxx函数；对于下层Miniport
+Driver来说，中间层驱动扮演一个Protocol
+Driver的角色，因此它在下边沿向NDIS注册一组Protocolxxx函数。Miniport
+Driver通过调用NdisMRegisterMiniport向NDIS注册一组MiniportXxx函数。其中原型如下：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NDIS_STATUS NdisMRegisterMiniport(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN NDIS_HANDLE&nbsp;&nbsp;NdisWrapperHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN PNDIS_MINIPORT_CHARACTERISTICS&nbsp;&nbsp;MiniportCharacteristics,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IN UINT&nbsp;&nbsp;CharacteristicsLength<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>
+&nbsp;&nbsp;&nbsp;&nbsp;其中，NdisWrapperHandls是之前通过调用NdisMInitializeWrapper取得的句柄MiniportCharacteristics包含一组MiniportXxx函数指针。<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Protocol Driver 通过调用 NdisRegisterProtocol向NDIS注册一组ProtocolXxx函数。其中原型如下：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;VOID NdisRegisterProtocol(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OUT PNDIS_STATUS&nbsp;&nbsp;Status,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OUT PNDIS_HANDLE&nbsp;&nbsp;NdisProtocolHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN PNDIS_PROTOCOL_CHARACTERISTICS&nbsp;&nbsp;ProtocolCharacteristics,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IN UINT&nbsp;&nbsp;CharacteristicsLength<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;其中，ProtocolCharacteristics包含一组ProtocolXxx函数。由于
+NDIS Intermediate Driver的双重性，它需要调用 NdisIMRegisterLayeredMiniport
+向NDIS注册，并向上层导出一组MiniportXxx函数，之后，调用NdisRegisterProtocol向NIDS注册，并向下层导出一组
+ProtocolXxx函数。当一个NDIS中间层介入后，如图二所示。<br>
+<br>
+3.2 NDIS数据发送流程：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;当上层协议驱动要发数据时，调用NdisSend/NdisSendPackets请求NDIS发送数
+据包，NDIS将会调用紧接其下的中间层驱动的MiniportSend/MiniportSendPackets，中间层驱动MiniportSend
+/MiniportSendPackets有机会在这里对包进行必要的操作，然后，中间层驱动再次调用NdisSend/NdisSendPackets
+请NDIS发送数据包，NDIS将调用其下层的Miniport
+Driver的MiniportSend/MiniportSendPackets，底层MiniportSend
+/MiniportSendPackets通过NDIS接口控制物理网络设备，将数据发送出去。在上层请求发送数据包时，上层分配了相关的资源(如内
+存)，希望在下层完成发送动作后，能够及时的收回相关的资源，所以，当上层调用NdisSend/NdisSendPackets返回
+NDIS_STATUS_PENDING以外的任何值时，上层就可以释放资源了，如果得到返回的结果是NDIS_STATUS_PENDING话，说明下
+层还没有完成发送请求，以后，等下层最终完成发送请求时，下层调用NdisMSendComplete请求NDIS通知上层可以释放资源了，于是NDIS
+调用上层注册的ProtocolSendComplete函数，上层在这它的ProtocolSendComplete中释放了资源后，再次调用
+NdisMSendComplete请求NDIS通知更上层。<br>
+<br>
+3.3 NDIS数据接收流程：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;当底层网络设备有数据到来的时候，将触发中断，相应的中断处理程序接管中断后，将可能调用
+Miniport Driver所注册的中断处理例程(ISR)，Miniport Driver通常在这里把网卡上的数据考贝到Miniport
+Driver缓冲区队列中去，出于效率的考虑，Miniport
+Driver这时可能不会立即通知上层处理新的数据，因为很可能，马上还有随后的新的数据到来，当接收到的包的数量达到一定程度的时候，Miniport
+Driver会调用NdisMIndicateReceivePacket指示新的NDIS新数据的到来，这时
+候，NdisMIndicateReceivePacket的调用将导致NDIS调用位于Miniport上层的中间层向NDIS注册的下边沿
+ProtocolReceivePacket函数。中间层驱动程序的ProtocolReceivePacket可以对收到的数据包进行相应的处理，之
+后，可以选择再次调用NdisMIndicateReceivePacket请求NDIS通知更上层数据包的到来，这时，NDIS调用更上层注册的
+ProtocolReceive函数，上层的ProtocolReceive对数据包进行必要的处理后，继续调用
+NdisMIndicateReceivePacket请求NDIS，通知更上层，最终数据包传到协议驱动中，由相关的协议栈进行处理。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;有时候，在这种级连的上传过程中，并不是那么的顺利，例如，由于某种原因，如：网络设备的驱动程序的可
+用缓冲区数量减少到某个指定的数量时，网络设备的驱动程序调用NdisMxxxIndicateReceivePacket请求NDIS通知上层数据的到
+来，这时NDIS将调用上层注册的ProtocolReceive，上层在ProtocolReceive中进行必要的处理后，进一步调用
+NdisMxxxIndicateReceivePacket使得NDIS调用上层的协议驱动注册的ProtocolReceive。在一些不太理想的情
+况下，一次中断，从网络设备中接收到的数据对某个协议来说并不是一个完整的协议数据包。(一般情况下，其余的数据bit已经在链路途中了，并随后立即就会
+到达网络设备，这有可能就发生在一个CPU在处理网络设备中断的同时，网络设备的板载存储器上就已经收到了其余的数据了，甚至DMA控制器可能已经把这些
+数据传到了系统的主存储器上了)，这时，上层的ProtocolReceive都无法进行正常的处理(一般对某个包进行处理，都要以相关的协议为依据，进
+行分析)。这时，在上传到某一层时，可以调用NdisTransferData请求NDIS把随后的信息传上来，这时，NDIS又将在向上传递的途中回过
+头来向下调用下面的MiniportTransferData，下层重复调用NdisTransferData把这个请求传送到底程的Miniport
+Driver。如果在上层调用NdisTransferData时不是返回NDIS_STATUS_PENDING，则上层可以继续它的处理，而如果返回
+NDIS_STATUS_PENDING，底程在最终完成请求时，调用NdisMTransferDataComplete请求NDIS通知上层传送完
+成，这将导致上层注册的ProtocolTransferDataComplete被调用，上层调用NdisMTransferDataComplete
+请求NDIS通知更上层。由于硬件技术的发展，网络设备板载存储的增加，系统主存储器的增加，以及网络传输能力的改善，NDIS那么迂回的通过
+MdisMxxxIndicateReceivePacket，ProtocolReceive，MiniportTransferData这一条坎坷的
+路径进行数据处理的情况似乎越来越少见了。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;接收过程是由下层传递上去的，同样，底层的Miniport分配了一些资源，如用于存储这个数据包内容
+的内存，我们希望这些资源最终能极时的被归还，以供以后使用。一个包在从下到上的传递过程时，如果某一层的
+ProtocolReceive/ProtocolReceivePacket有兴趣对这个包进行处理的话，则需要检查这个包的OOB信息段是不是携带
+NDIS_STATUS_RESOURCES，如果是的话，说明其下层资源紧缺，希望上层在处理的时候，自己考贝一份副本，以供自己使用，因为下层希望自
+己能够尽快收回这个包的资源，在这里，上层以后可以用自己的那份拷贝指示上层数据包的到来，这样的话，以后，中间层希望上层处理完后，能够收回所有权。另
+一方面，底层的Miniport并不是每一次都会在OOB信息段中设置NDIS_STATUS_RESOURCES标志的，这在很多情况下是不必要的。当
+上层协议驱动完成处理时，可以调用NdisReturnPackets通知NDIS，相应包已经处理完成，可以安全的释放相关资源了，于是NDIS将调用
+其下层注册的MiniportReturnPackets，下层在这里释放与这个包相关的资源，并继续调用NdisReturnPackets，请求
+NDIS把这个通知传给更下层。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;这样一来，发数据由上层发起请求往下传，而接收数据从下层往上传，有没有可能一次接收的过层是由上面发
+起往下传的呢？这是没有必要的，为什么？我的应用程序不就主动调用WSARecv或WSARecvFrom等函数主动向下传递的一次收数据的请求的吗？事
+实上是这样的，你的接收请求经过SPI，TDI，到了最终的协议驱动时，如果协议驱动中，指定的套接字上（最重要的是端口和目的IP了）有相应的数据的能
+满足你的这一次的读请求的话，就完成你的请求，如果不能的话，则阻塞了。当下层有数据来的时候，数据传递到协议驱动时，协议驱动会检查包头的信息并查看当
+前不是有应用程序打开过相应的端口，以及和对应的目标建立过连接，如果有的话，就把数据存到协议栈中的缓冲区中去，如果对应套接字上有阻塞的接收请求的
+话，就判断是不是能完成它的请求了，如果能了，就完成他，如果不能，继续等以后下层传上来再重复这个过程。否则就抛弃了，另外，如果，一个应用程序建立一
+个套接字，并与一台机器建立连接，对方发送了数据，协议栈会把数据保存起来，也许连接超时后，协议栈的缓冲区中还有应用程序没有接收的数据的话，也被抛弃
+了。所以，协议驱动从来都没有必要主动往下传递一个接收数据的请求。这一点，对于有一点网络程序调试经验的人来说，似乎可以直接找到一个的证据，在调试器
+的调用WSARecv前下一个断点，用Sniffer抓包，可能数据已经到来了，然后，再回到调试器中执行WSARecv，可以看到收到的就是先前
+Sniffer下来的数据了。<br>
+（注：用一个工作在NDIS协议层或是NDIS中间层的Sniffer来观查。）<br>
+<br>
+3.4 NDIS 的数据包结构。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;发送NDIS Protocol
+Driver分配相关的包资源，请求NDIS向下传递发送动作，接收时，NDIS Miniport
+Driver分配相关的包资源请求NDIS向上传递接收动作，中间层要对包进行处理，首先通过包描述符查询出这个包中的所有Buffer描述符，然后，从
+每一个Buffer描述符中取得相应的数据。一个包描述符中包含了一个或多个Buffer描述符，每一个Buffer描述符中包含了这个Buffer中数
+据的缓冲区首地址及其大小等信息，另外，一个包描述符中还包括了一些保留给开发者自己使用的Reserved字段，其于的一些字段，并没有被公开。另外
+NDIS提供了一些宏和一些函数对这相应的描述符进行操作。为什么要把这个结构弄得这么复杂呢？这是由于面对分层的协议处理的时候，避免过多的数据考贝，
+比如对于TCP/IP协议来说，上层传递下来的数据，在经过TCP，IP层时，把TCP，IP协议头部那个Buffer分别加入这个Packet来就可以
+了，如果，要它们在一个Buffer中，则需要在经过TCP层时，TCP层建立一个新的Buffer，把头部放到这个Buffer中来，并把数据考贝到这
+个Buffer中来；到了IP层还要继续这一动作......<br>
+<br>
+四 基于PassThru框架的中间层驱动程序的扩展实现<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Microsoft在DDK中附带PassThru提供了一个的中间层驱动框架，使得开发者能够相对容
+易的在这个基础实现自己的NDIS中间层驱动扩展。我们将在PassThru的基础上实现一个基本的数据包操作的扩展。对于发送出去的数据包处理，只要在
+PassThru中的MiniportSend和MiniportSendPackets中加入必要的操作代码，而对于接收的数据包时，则需要在
+ProtocolReceive和ProtocolReceviePackets中加入必要的操作代码，在这里，我将以windows 2003
+DDK的PassThru为例，进行扩展。<br>
+<br>
+4.1 发送处理<br>
+VOID MPSendPackets(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN
+NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MiniportAdapterContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN PPNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PacketArray,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN
+UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NumberOfPackets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 省略代码若干，请参看PassThru的源代码。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 分配一个新的包描述符。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisAllocatePacket(&amp;Status, &amp;MyPacket, pAdapt-&gt;SendPacketPoolHandle);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Status == NDIS_STATUS_SUCCESS)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PSEND_RSVD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd = (PSEND_RSVD)(MyPacket-&gt;ProtocolReserved);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 把原来的包描述符保存在新分配的包描述符中的Reserved字段中，原因在后面描述。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd-&gt;OriginalPkt = Packet;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 调用BuildMyPacket对包进行自己的处理(更改包的内容，或其它动作)。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (BuildMyPacket(pAdapt, Packet, MyPacket) == FALSE)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 如果处理失败，则把原始的包信息Copy到MyPacket。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 这是为了在处理失败的情况下，也让原始的信息能发出去。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NDIS_PACKET_FIRST_NDIS_BUFFER(MyPacket) = NDIS_PACKET_FIRST_NDIS_BUFFER(Packet);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NDIS_PACKET_LAST_NDIS_BUFFER(MyPacket) = NDIS_PACKET_LAST_NDIS_BUFFER(Packet);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 请求NDIS向下层传递发送动作。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisSend(&amp;Status, pAdapt-&gt;BindingHandle, MyPacket);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 如果NdisSend返回非NDIS_STATUS_PENDING则释放自己的资源。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Status != NDIS_STATUS_PENDING)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DestroyMyPacket(MyPacket); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisFreePacket(MyPacket);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;// .......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 如果NdisSend返回非NDIS_STATUS_PENDING，说明下层已成功发送完成<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 调用NdisMSendComplete请求NDIS通知上层释放资源，这将导致上层注册的<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ProtocolSendComplete被调用，上层在ProtocolSendComplete中释放资源后<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 将继续调用NdisMSendComplete请求NDIS把这个通知往上传递。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Status != NDIS_STATUS_PENDING)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisMSendComplete(ADAPT_MINIPORT_HANDLE(pAdapt), Packet, Status);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 如果返回了 NDIS_STATUS_PENDING，则在该层的资源还不能释放，在底层<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 完成发送时，底层将调用NdisMSendComplete，请求NDIS向上传递这个通知。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 该层在自己的ProtocolSendComplete释放相应的资源。<br>
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+VOID PtSendComplete(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProtocolBindingContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;PNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Packet,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;NDIS_STATUS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+{&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// .......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 上面发送的时候，我们分配了一个新的包描述符，并把上层的包描述符保存在<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ProtocolReserved中，现在，把这个上层的包描述符还原出来。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PSEND_RSVD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd = (PSEND_RSVD)(Packet-&gt;ProtocolReserved);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Pkt = SendRsvd-&gt;OriginalPkt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// .......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 释放自己的资源<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DestroyMyPacket(Packet);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisDprFreePacket(Packet);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 用上层的包描述符请求NDIS通知上层释放资源<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisMSendComplete(pAdapt-&gt;MiniportHandle, Pkt, Status);<br>
+}<br>
+<br>
+<br>
+BOOLEAN BuildMyPacket(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN PADAPT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pAdapt, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN PNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;original_packet, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;OUT PNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyPacket<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PSEND_RSVD&nbsp;&nbsp;SendRsvd;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NDIS_STATUS Status;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NDIS_PHYSICAL_ADDRESS phyaddr = {-1};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PVOID pcontent = NULL;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ULONG total_length = 0, current_length = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PNDIS_BUFFER MyBuffer;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 分配新的内存<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Status = NdisAllocateMemory((PVOID)&amp;pcontent, 2014, 0, phyaddr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (NDIS_STATUS_SUCCESS != Status) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FALSE;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisZeroMemory(pcontent, 2014);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 把包中的数据Copy到自己的Buffer中来。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisQueryPacket(packet, NULL, NULL, &amp;ndis_buffer, &amp;total_length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (NULL != ndis_buffer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisQueryBufferSafe(ndis_buffer,
+&amp;address, &amp;current_length, NormalPagePriority);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisMoveMemory(pcontent, address, current_length);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(PUCHAR)pcontent += current_length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisGetNextBuffer(ndis_buffer, &amp;ndis_buffer);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;//
+分配新的一个Buffer描述
+符&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisAllocateBuffer(&amp;Status, &amp;MyBuffer, pAdapt-&gt;SendPacketPoolHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pcontent,
+total_length);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (NDIS_STATUS_SUCCESS != Status) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisFreeMemory(pcontent, 2014, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return FALSE;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 在这里对包的内容进行你自己的处理，如果修改了内容的话，由于这是在协议栈之下，<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 所以要重新修正CheckSum。调整MyBuffer，和MyPacket相关信息，如长度等。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 注意，这里的数据已经是网络字节数据，所以在x86的处理器上要注意字节顺序的问题<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 对于少量内容的修改，重新扫描整个Buffer修正CheckSum是不值得的。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// RFC关于Nat的文档中详细描述了基于差异分析的修正CheckSum的方法，并给出了具体算法实现。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 把新的包描述符存放到新的包描述符中的MiniportReserved中去，原因在DestroyMyPacket中解释<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd = (SEND_RSVD)MyPacket-&gt;MiniportReserved;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd-&gt;OriginalPkt = MyPacket;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisChainBufferAtFront(MyPacket, MyBuffer); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;return TRUE;<br>
+}<br>
+<br>
+<br>
+VOID DestroyMyPacket(PNDIS_PACKET MyPacket)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PNDIS_BUFFER MyBuffer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PVOID address;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PNDIS_BUFFER tmpBuffer, MyBuffer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ULONG current_length;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;PSEND_RSVD&nbsp;&nbsp;SendRsvd;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 由于在 BuildMyPacket，分配资源失败的情况下，仍然用原包发送出去，<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 在这种情况下，是不用释放相关的Buffer资源的<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// BuildMyPacket 当分配成功时，我把新包中的 MiniportReserved 字段<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 指向了新的包描述符，我以这个为依据判断是否需要释放相关的Buffer资源。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;SendRsvd = (PSEND_RSVD)MyPacket-&gt;MiniportReserved;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (MySendRsvd-&gt;OriginalPkt != MyPacket)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisUnchainBufferAtFront(MyPacket ,&amp;MyBuffer); &nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;while (NULL != MyBuffer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisQueryBufferSafe(MyBuffer,
+&amp;address, &amp;current_length, NormalPagePriority);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisFreeMemory(address, current_length, 0);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmpBuffer = MyBuffer;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisGetNextBuffer(tmpBuffer, &amp;MyBuffer);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisFreeBuffer(tempBuffer);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+4.2 接收处理<br>
+&nbsp;&nbsp;&nbsp;&nbsp;接收的时候，由于那个TransferData的曲折过程，使得接收处理要相对复杂一点点，在
+ProtocolReceive和ProtocolReceivePacket中的处理不同。但是由于2003
+DDK中的PassThru中，没有对数据进行任何处理，所以，它的ProtocolReceive的处理相对来说，简单了一些。<br>
+NDIS_STATUS PtReceive(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProtocolBindingContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MacReceiveContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;PVOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HeaderBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HeaderBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;PVOID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LookAheadBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookAheadBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN&nbsp;&nbsp;UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PacketSize<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// .......<br>
+ <br>
+&nbsp;&nbsp;&nbsp;&nbsp;do<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 分配一个新的包描述符<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisDprAllocatePacket(&amp;Status,
+&amp;MyPacket, pAdapt-&gt;RecvPacketPoolHandle);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Status == NDIS_STATUS_SUCCESS)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// PassThru维护了一个自己的接收队列，当收到下层的包时，PassThru并不是立刻<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//
+调用NdisMIndicateReceive/NdisMXxxIndicateReceive请求NDIS通知上层新数据<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 的到来，而是在自己的队列中缓冲起来，当自己的队列满了以后，PassThru将一<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 次性调用NdisMIndicateReceive请求NDIS通知上层数据的到来。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 通常最底程的Miniport Driver也有同样的处理机制。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PtQueueReceivedPacket(pAdapt, MyPacket, TRUE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// MyPacket的一个副本被Copy到PassThru中的队列去了，现在可以释放这一个Packet了。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisDprFreePacket(MyPacket);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//
+注意这里，跳出了整个do-while了。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// The miniport below us uses the old-style (not packet)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// receive indication. Fall through.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (Packet != NULL)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 当执行到这里，说明前面没有跳出do-while循环，也就是说，包申请失败<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 进一步说明，PassThru的缓冲队列满了，于是有必要，调用 NdisMIndicateReceive<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 请求NDIS通知上层数据包的到来了，这将导致上层注册的 ProtocolReceivePacket<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 被调用.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PtFlushReceiveQueue(pAdapt);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 把队列中的包通知了给上层接收，但是这一个包，由于分配新的描述符失败<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 所以并没有通知给上层，因此，在这里，进行单独的处理。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pAdapt-&gt;IndicateRcvComplete = TRUE;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 以下是进行各种协议相关的处理。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch (pAdapt-&gt;Medium)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case NdisMedium802_3:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case NdisMediumWan:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisMEthIndicateReceive(pAdapt-&gt;MiniportHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MacReceiveContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HeaderBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HeaderBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookAheadBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookAheadBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PacketSize);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case NdisMedium802_5:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisMTrIndicateReceive(pAdapt-&gt;MiniportHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MacReceiveContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HeaderBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HeaderBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookAheadBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LookAheadBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PacketSize);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;case NdisMediumFddi:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisMFddiIndicateReceive(pAdapt-&gt;MiniportHandle,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MacReceiveContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HeaderBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HeaderBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LookAheadBuffer,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LookAheadBufferSize,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PacketSize);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ASSERT(FALSE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} while(FALSE);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return Status;<br>
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;注意，PassThru
+并没有对收到的包进行任何处理，因此，在它的ProtocolReceive中，没有调用NdisTransferData，请求NDIS传送这个包其余
+的数据，它直接Indicate，把这个工作交给了上层去处理，如果，你的中间层要处理的话，就得在放入队列前面，调用
+NdisTransferData，如果返回成功，则在紧接其下进行处理，如果返回 NDIS_STATUS_PENDING
+的话，就把处理放到ProtocolTransferDataComplete中处理。所以，你的ProtocolReceive应该看起来是这样的过
+程：<br>
+1.&nbsp;&nbsp;在把包加入PassThru的队列前，调用NdisTransferData.请求NDIS通知下层传递其余的数据。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(这里回头走了一段曲折的路了)。<br>
+2A. 如果返回成功，则进行处理，如修改数据，重新修正CheckSum，<br>
+&nbsp;&nbsp;&nbsp;&nbsp;在X86平台上可要注意字节顺序的问题了。<br>
+2B. 如果返回 NDIS_STATUS_PENDING 就在 ProtocolTransferDataComplete进行2A的处理。<br>
+3.&nbsp;&nbsp;处理完成后，排入PassThru的队列。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;由于，现在网络设备硬件的发展，内存容量的提高，底程的Miniport Driver通常有一个类似PassThru的缓存处理机制，走这条曲折的线路上来，似乎很少见了。<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;在搞懂了ProtocolReceive后，rotocolReceivePacket就更简单了。<br>
+INT<br>
+PtReceivePacket(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN
+NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProtocolBindingContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN PNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Packet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// .......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 进行你自己的处理，修改包的内容，修正CheckSum等操作，参考前面接收过程<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 取得Packet中的内容<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Status = NDIS_GET_PACKET_STATUS(Packet);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Status == NDIS_STATUS_RESOURCES)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 如果下层设置了NDIS_STATUS_RESOURCES，说明下层由于资源<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 紧缺等原因，要求上层经快处理，于是产生一个考贝的<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 包描述符排入队列，马上Indicate，并调用NdisReturnPacket请求 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// NDIS归还下层的资源。这是PassThru的处理方法<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 事实上，如果，你自己要修改这个包，你已经有一个新的Packet和Buffer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 以及相关内容了，只要把你的这个新的包排入队列，并调用 NdisReturnPacket<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 归还下层的资源，而不立即Indicate上层，也是可以的。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PtQueueReceivedPacket(pAdapt, Packet, TRUE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PtQueueReceivedPacket(pAdapt, MyPacket, FALSE);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (Status == NDIS_STATUS_RESOURCES)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NdisDprFreePacket(MyPacket);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ......<br>
+}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;当上层处理完后，调用NdisReturnPacket请求NDIS归还下层的资源时，NDIS调用下
+层注册的MiniportReturnPacket在这里释放资源后，再调用NdisReturnPackets通知更下层。<br>
+VOID MPReturnPacket(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN
+NDIS_HANDLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MiniportAdapterContext,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;IN PNDIS_PACKET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Packet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 如果你和我一样，在接收的时候，自己处理不成功的情况下，就把原来的数据往上传<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 你就可以像我处理发送的方法一样，利用那几个Reserve的字段，在这里判断，<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 并进行必要的资源释放。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// 通知下层释放资源<br>
+&nbsp;&nbsp;&nbsp;&nbsp;NdisReturnPackets(&amp;Packet, 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// ......<br>
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;注意：对于一个像TCP这样面像连接的苏方的数据包来说，你要是改变了它的长度的话，那问题就更复杂
+了，你在协议栈的下方，上层协议栈不知道这个修改，而你把它发到目标计算机去，目标计算机得到的长度是修改后的，那双方的SEQ，ACK就不能同步了，这
+样的话，你必须记录下你的改动，并对以后的通信，做相应的修正。不然，你一改的话，接下来的通信就RST了。<br>
+<br>
+五　Ring 0 和 Ring 3的通信问题<br>
+&nbsp;&nbsp;&nbsp;&nbsp;也许你并不只是想修改过往的数据，你也想把这些数据直接传到Ring3上去，或有一些其它的理由需要在
+你的NDIS中间层驱动和应用程序通信，2003
+DDK中的PassThru也提供了这个功能，它已经创建好了设备对像和符号链接，你只需要修改驱动对象的DispatchTable就行了。假如，你希
+望Ring3的程序通能Read
+NDIS中间层截获的数据，你需要维护两个队列，一个用于缓存NDIS收到的数据，另一个存放Ring3的IRP请求队列等等，是的，这个已经没有什么好
+说的了，这一切对于你来说，也经不是难题了。但是，在兴奋之时，需要注意的是，现在是位于任何协议栈的下方，如果没有任何验证机制的话，别人只要在你的局
+域网中向你发送链路层的广播，或目标MAC地址是你的网卡的MAC的数据包时，你的程序都要受到影响，也就是说，别人随便发个包，你的系统都要为他操劳
+了，从安全的角度来说，你的系统应该尽可能减小受外部影响的程度，所以，你在加上这个功能的时候，有必要考虑这一点。<br>
+<br>
+后记：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;也许，和很多人一样，我曾经试图看着DDK中的文档学习NDIS驱动开发，但是总是不顺利，到头来似乎
+感觉NDIS很难，DDK的文档没用，但是，在动手写起程序来时，发现了自己还是离不开DDK的文档，刚开始试图从看DDK文档中的描述，进而想掌握
+NDIS，这似乎是不容易的，至少对我来说是这样的，等你真正的写起程序来，遇上一些具体的问题，受到一些挫折后，再带着这些问题来看DDK文档就会有收
+获了。本文描述了自己学习过程中的一些理解，写出来希望能与大家交流，由于自己水平有限，错误之错在所难免，欢迎诸位指正。 QQ:
+22517257. Email: Addylee2004@163.com, MSN: Addylee2004@163.com<br>
+<br>
+参考资料：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DDK开发文档。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;驱动开发网NDIS板块的讨论。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.xfocus.net/articles/200307/568.html" target="_blank">http://www.xfocus.net/articles/200307/568.html</a>
+	</td>
+  </tr>
+</tbody></table>
+<div class="footer">
+  Copyright &#169; 1998-2006 XFOCUS Team. All Rights Reserved
+</div>
+</body></html>

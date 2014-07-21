@@ -1,0 +1,24 @@
+386_OBJECTS= \
+    $(_OBJ_DIR)\i386\passthru.res \
+    $(_OBJ_DIR)\i386\miniport.obj \
+    $(_OBJ_DIR)\i386\passthru.obj \
+    $(_OBJ_DIR)\i386\protocol.obj
+
+PASS0_386_OBJECTS=
+
+IA64_OBJECTS= \
+    $(_OBJ_DIR)\ia64\passthru.res \
+    $(_OBJ_DIR)\ia64\miniport.obj \
+    $(_OBJ_DIR)\ia64\passthru.obj \
+    $(_OBJ_DIR)\ia64\protocol.obj
+
+PASS0_IA64_OBJECTS=
+
+AMD64_OBJECTS= \
+    $(_OBJ_DIR)\amd64\passthru.res \
+    $(_OBJ_DIR)\amd64\miniport.obj \
+    $(_OBJ_DIR)\amd64\passthru.obj \
+    $(_OBJ_DIR)\amd64\protocol.obj
+
+PASS0_AMD64_OBJECTS=
+

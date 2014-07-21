@@ -1,0 +1,51 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: PathruInVc - Win32 Debug--------------------
+</h3>
+
+
+E:\NDIS\PathruInVc>if "D:\WINDDK\2600" == "" goto InvalidParameter 
+
+E:\NDIS\PathruInVc>if not exist D:\WINDDK\2600\bin\setenv.bat goto SetenvNotFound 
+
+E:\NDIS\PathruInVc>call D:\WINDDK\2600\bin\setenv.bat D:\WINDDK\2600 checked 
+BUILD: Object root set to: ==> objchk
+BUILD: Adding /Y to COPYCMD so xcopy ops won't hang.
+BUILD: /i switch ignored
+BUILD: Compile and Link for i386
+BUILD: Loading D:\WINDDK\2600\build.dat...
+BUILD: Computing Include file dependencies:
+BUILD: Examining e:\ndis\pathruinvc\driver directory for files to compile.
+    e:\ndis\pathruinvc\driver 
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\wxp\windows.h: cannot find include file <cderr.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\wxp\windows.h: cannot find include file <lzexpand.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\wxp\windows.h: cannot find include file <winperf.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\wxp\windows.h: cannot find include file <ole.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\winbase.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\wingdi.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\winuser.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\winnls.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\wxp\winreg.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\mmsystem.h: cannot find include file <macwin32.h>
+BUILD: e:\ndis\pathruinvc\driver\passthru.rc: d:\winddk\2600\inc\crt\winscard.h: cannot find include file "scarderr.h"
+    e:\ndis\pathruinvc\driver - 1 source files (1,457 lines)
+BUILD: Saving D:\WINDDK\2600\build.dat...
+BUILD: Compiling e:\ndis\pathruinvc\driver directory
+Compiling - miniport.c for i386
+BUILD: Linking e:\ndis\pathruinvc\driver directory
+Linking Executable - objchk\i386\passthru.sys for i386
+BUILD: Done
+
+    2 files compiled -   728 LPS
+    1 executable built
+
+
+
+<h3>Results</h3>
+PathruInVc.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
